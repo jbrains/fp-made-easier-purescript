@@ -104,11 +104,11 @@ checkHead :: Spec Unit
 checkHead =
     describe "head" do
         it "empty list" do
-            (head (Nil :: List Int)) `shouldEqual` Nothing
+            (head (Nil :: List Unit)) `shouldEqual` Nothing
         it "1-item list" do
             (head $ 12 : Nil) `shouldEqual` Just 12
         it "longer list" do
-            (head $ 1 : 2 : 3: 4 : 5 : Nil) `shouldEqual` Just 1
+            (head $ 1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` Just 1
 
 checkDataList :: Spec Unit
 checkDataList =
