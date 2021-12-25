@@ -1,24 +1,19 @@
 module Test.Main where
 
+import Prelude
+
 import Effect (Effect)
 import Effect.Aff (launchAff_)
-import Prelude (Unit, show, discard)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
-
-flip :: forall a b c. (a -> b -> c) -> (b -> a -> c)
-flip f = \x y -> f y x
 
 checkFlip :: Spec Unit
 checkFlip =
     describe "flip" do
         it "applies the correct argument" do
             (flip const 1 2) `shouldEqual` 2
-
-const :: forall a b. a -> (b -> a)
-const x = \_ -> x
 
 checkConst :: Spec Unit
 checkConst =
@@ -28,21 +23,11 @@ checkConst =
             where
             ignoreMe = 12
 
-apply :: forall a b. (a -> b) -> a -> b
-apply f x = f x
-
-infixr 0 apply as $
-
 checkApplyOperator :: Spec Unit
 checkApplyOperator =
     describe "$" do
         it "applies the argument correctly" do
             (show $ flip const 1 2) `shouldEqual` "2"
-
-applyFlipped :: forall a b. a -> (a -> b) -> b
-applyFlipped = flip apply
-
-infixl 1 applyFlipped as #
 
 checkApplyFlippedOperator :: Spec Unit
 checkApplyFlippedOperator =
@@ -57,4 +42,3 @@ main = do
         checkConst
         checkApplyOperator
         checkApplyFlippedOperator
-
