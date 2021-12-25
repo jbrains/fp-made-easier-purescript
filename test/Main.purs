@@ -40,13 +40,15 @@ checkApplyOperator =
             (show $ flip const 1 2) `shouldEqual` "2"
 
 applyFlipped :: forall a b. a -> (a -> b) -> b
-applyFlipped x f = f x
+applyFlipped = flip apply
+
+infixl 1 applyFlipped as #
 
 checkApplyFlippedOperator :: Spec Unit
 checkApplyFlippedOperator =
     describe "#" do
         it "applies the argument correctly" do
-            (flip const 1 2) `applyFlipped` show `shouldEqual` "2"
+            (flip const 1 2 # show) `shouldEqual` "2"
 
 main :: Effect Unit
 main = do
