@@ -81,8 +81,12 @@ checkSnoc =
             (snoc (1 : 2 : 3 : 4 : 5 : Nil) 12) `shouldEqual` (1 : 2 : 3 : 4 : 5 : 12 : Nil)
 
 length :: forall a. List a -> Int
-length Nil = 0
-length (x : xs) = 1 + length xs
+length xs = tailRecursiveLength 0 xs
+    where
+    tailRecursiveLength :: Int -> List a -> Int
+    tailRecursiveLength howManySoFar remainingList = case remainingList of
+        Nil -> howManySoFar
+        (_ : xs) -> tailRecursiveLength (howManySoFar + 1) xs
 
 checkLength :: Spec Unit
 checkLength =
