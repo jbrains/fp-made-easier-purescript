@@ -29,6 +29,15 @@ checkConst =
             where
             ignoreMe = 12
 
+apply' :: forall a b. (a -> b) -> a -> b
+apply' f x = f x
+
+checkApplyOperator :: Spec Unit
+checkApplyOperator =
+    describe "$" do
+        it "applies the argument correctly" do
+            (show `apply'` (flip' const' 1 2)) `shouldEqual` "2"
+
 main :: Effect Unit
 main = do
     launchAff_ $ runSpec [ consoleReporter] do
