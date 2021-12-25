@@ -98,7 +98,7 @@ checkLength =
 
 head :: forall a. List a -> Maybe a
 head Nil = Nothing
-head (x : xs) = Just x
+head (x : _) = Just x
 
 checkHead :: Spec Unit
 checkHead =
