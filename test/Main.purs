@@ -81,7 +81,7 @@ checkSnoc =
             (snoc (1 : 2 : 3 : 4 : 5 : Nil) 12) `shouldEqual` (1 : 2 : 3 : 4 : 5 : 12 : Nil)
 
 length :: forall a. List a -> Int
-length xs = tailRecursiveLength 0 xs
+length = tailRecursiveLength 0
     where
     tailRecursiveLength :: Int -> List a -> Int
     tailRecursiveLength howManySoFar remainingList = case remainingList of
