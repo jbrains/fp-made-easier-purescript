@@ -66,11 +66,26 @@ checkNull =
         it "handles an non-empty list" do
             (null $ singleton 12) `shouldEqual` false
 
+snoc :: forall a. a -> List a -> List a
+snoc element Nil = singleton element
+snoc element (x : xs) = x : snoc element xs
+
+checkSnoc :: Spec Unit
+checkSnoc =
+    describe "snoc" do
+        it "appends to an empty list" do
+            (snoc 12 Nil) `shouldEqual` (singleton 12)
+        it "appends to a non-empty list" do
+            (snoc 12 $ singleton 7) `shouldEqual` (7 : 12 : Nil)
+        it "appends to a longer non-empty list" do
+            (snoc 12 $ (1 : 2 : 3 : 4 : 5 : Nil)) `shouldEqual` (1 : 2 : 3 : 4 : 5 : 12 : Nil)
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
         checkSingleton
         checkNull
+        checkSnoc
 
 main :: Effect Unit
 main = do
