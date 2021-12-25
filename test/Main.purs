@@ -4,7 +4,6 @@ import Prelude
 
 import Effect (Effect)
 import Effect.Aff (launchAff_)
-import Effect.Class.Console (log)
 import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
