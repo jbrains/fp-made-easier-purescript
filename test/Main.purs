@@ -18,7 +18,6 @@ checkFlip =
         it "applies the correct argument" do
             (flip' const' 1 2) `shouldEqual` 2
 
-
 const' :: forall a b. a -> (b -> a)
 const' x = \_ -> x
 
