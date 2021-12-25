@@ -80,12 +80,25 @@ checkSnoc =
         it "appends to a longer non-empty list" do
             (snoc (1 : 2 : 3 : 4 : 5 : Nil) 12) `shouldEqual` (1 : 2 : 3 : 4 : 5 : 12 : Nil)
 
+length :: forall a. List a -> Int
+length Nil = 0
+length (x : xs) = 1 + length xs
+
+checkLength :: Spec Unit
+checkLength =
+    describe "length" do
+        it "empty list" do
+            length Nil `shouldEqual` 0
+        it "non-empty list" do
+            length (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` 5
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
         checkSingleton
         checkNull
         checkSnoc
+        checkLength
 
 main :: Effect Unit
 main = do
