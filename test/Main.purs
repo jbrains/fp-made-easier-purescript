@@ -2,16 +2,14 @@ module Test.Main where
 
 import Prelude
 
+import Data.List (List(..), (:))
+import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Effect.Aff (launchAff_)
-import Data.List (List(..), (:))
-import Test.Spec (Spec, describe, it)
+import Test.Spec (Spec, describe, it, pending')
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
-import Test.Spec (pending')
-import Data.Maybe (Maybe)
-import Data.Maybe (Maybe(..))
 
 checkFlip :: Spec Unit
 checkFlip =
