@@ -17,9 +17,22 @@ checkFlip :: Spec Unit
 checkFlip =
     describe "flip" do
         it "applies the correct argument" do
-            (flip' const 1 2) `shouldEqual` 2
+            (flip' const' 1 2) `shouldEqual` 2
+
+
+const' :: forall a b. a -> (b -> a)
+const' x = \_ -> x
+
+checkConst :: Spec Unit
+checkConst =
+    describe "const" do
+        it "returns its argument" do
+            const' "::return me::" ignoreMe `shouldEqual` "::return me::"
+            where
+            ignoreMe = 12
 
 main :: Effect Unit
 main = do
     launchAff_ $ runSpec [ consoleReporter] do
         checkFlip
+        checkConst
