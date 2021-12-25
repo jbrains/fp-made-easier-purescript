@@ -147,6 +147,44 @@ checkInit =
         it "longer list" do
             init (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` Just (1 : 2 : 3 : 4 : Nil)
 
+uncons :: forall a. List a -> Maybe { head :: a, tail :: List a}
+uncons Nil = Nothing
+uncons (x : xs) = Just { head: x, tail: xs }
+
+checkUncons :: Spec Unit
+checkUncons =
+    describe "uncons" do
+        it "empty list" do
+            (uncons (Nil :: List Unit)) `shouldEqual` Nothing
+        it "1-item list" do
+            uncons (1 : Nil) `shouldEqual` (Just { head: 1, tail: Nil })
+        it "longer list" do
+            uncons (1 : 2 : 3 : 4 : Nil) `shouldEqual` Just { head: 1, tail: (2 : 3 : 4 : Nil) }
+
+index :: forall a. List a -> Int -> Maybe a
+index Nil      _ = Nothing
+index _        n | n < 0 = Nothing
+index (x : _)  0 = Just x
+index (_ : xs) n = index xs (n-1)
+
+checkIndex :: Spec Unit
+checkIndex =
+    describe "index" do
+        it "empty list" do
+            index (Nil :: List Unit) 0 `shouldEqual` Nothing
+            index (Nil :: List Unit) 1 `shouldEqual` Nothing
+            index (Nil :: List Unit) 42397 `shouldEqual` Nothing
+        describe "non-empty list" do
+            it "index within bounds" do
+                index (1 : Nil) 0 `shouldEqual` Just 1
+                index (1 : 2 : 3 : 4 : 5 : Nil) 2 `shouldEqual` Just 3
+            it "index out of bounds" do
+                index (1 : Nil) 1 `shouldEqual` Nothing
+                index (1 : Nil) 2 `shouldEqual` Nothing
+                index (1 : Nil) 273123 `shouldEqual` Nothing
+                index (1 : 2 : 3 : 4 : 5 : Nil) (-2) `shouldEqual` Nothing
+                index (1 : 2 : 3 : 4 : 5 : Nil) 5 `shouldEqual` Nothing
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -157,6 +195,8 @@ checkDataList =
         checkHead
         checkLast
         checkInit
+        checkUncons
+        checkIndex
 
 main :: Effect Unit
 main = do
