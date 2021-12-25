@@ -35,10 +35,15 @@ checkApplyFlippedOperator =
         it "applies the argument correctly" do
             (flip const 1 2 # show) `shouldEqual` "2"
 
+checkPrelude :: Spec Unit
+checkPrelude =
+    describe "Prelude" do
+       checkFlip
+       checkConst
+       checkApplyOperator
+       checkApplyFlippedOperator
+
 main :: Effect Unit
 main = do
     launchAff_ $ runSpec [ consoleReporter] do
-        checkFlip
-        checkConst
-        checkApplyOperator
-        checkApplyFlippedOperator
+        checkPrelude
