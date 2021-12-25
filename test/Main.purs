@@ -39,9 +39,20 @@ checkApplyOperator =
         it "applies the argument correctly" do
             (show $ flip const 1 2) `shouldEqual` "2"
 
+applyFlipped :: forall a b. a -> (a -> b) -> b
+applyFlipped x f = f x
+
+checkApplyFlippedOperator :: Spec Unit
+checkApplyFlippedOperator =
+    describe "#" do
+        it "applies the argument correctly" do
+            (flip const 1 2) `applyFlipped` show `shouldEqual` "2"
+
 main :: Effect Unit
 main = do
     launchAff_ $ runSpec [ consoleReporter] do
         checkFlip
         checkConst
         checkApplyOperator
+        checkApplyFlippedOperator
+
