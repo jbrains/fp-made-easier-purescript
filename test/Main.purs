@@ -10,6 +10,8 @@ import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
 import Test.Spec (pending')
+import Data.Maybe (Maybe)
+import Data.Maybe (Maybe(..))
 
 checkFlip :: Spec Unit
 checkFlip =
@@ -96,6 +98,20 @@ checkLength =
         it "non-empty list" do
             length (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` 5
 
+head :: forall a. List a -> Maybe a
+head Nil = Nothing
+head (x : xs) = Just x
+
+checkHead :: Spec Unit
+checkHead =
+    describe "head" do
+        it "empty list" do
+            (head (Nil :: List Int)) `shouldEqual` Nothing
+        it "1-item list" do
+            (head $ 12 : Nil) `shouldEqual` Just 12
+        it "longer list" do
+            (head $ 1 : 2 : 3: 4 : 5 : Nil) `shouldEqual` Just 1
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -103,6 +119,7 @@ checkDataList =
         checkNull
         checkSnoc
         checkLength
+        checkHead
 
 main :: Effect Unit
 main = do
