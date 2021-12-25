@@ -129,6 +129,24 @@ checkLast =
         it "longer list" do
             last (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` Just 5
 
+init :: forall a. List a -> Maybe (List a)
+init Nil = Nothing
+init xs = Just $ initNonEmpty xs where
+    initNonEmpty :: List a -> List a
+    initNonEmpty Nil = Nil
+    initNonEmpty (_ : Nil) = Nil
+    initNonEmpty (y : ys) = y : initNonEmpty ys
+
+checkInit :: Spec Unit
+checkInit =
+    describe "init" do
+        it "empty list" do
+            init (Nil :: List Unit) `shouldEqual` Nothing
+        it "1-item list" do
+            init (1 : Nil) `shouldEqual` Just Nil
+        it "longer list" do
+            init (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` Just (1 : 2 : 3 : 4 : Nil)
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -138,6 +156,7 @@ checkDataList =
         checkLength
         checkHead
         checkLast
+        checkInit
 
 main :: Effect Unit
 main = do
