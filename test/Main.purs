@@ -100,6 +100,10 @@ head :: forall a. List a -> Maybe a
 head Nil = Nothing
 head (x : _) = Just x
 
+tail :: forall a. List a -> Maybe (List a)
+tail Nil = Nothing
+tail (_ : xs) = Just xs
+
 checkHead :: Spec Unit
 checkHead =
     describe "head" do
