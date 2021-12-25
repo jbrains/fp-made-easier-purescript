@@ -32,11 +32,13 @@ checkConst =
 apply' :: forall a b. (a -> b) -> a -> b
 apply' f x = f x
 
+infixr 0 apply' as $$$
+
 checkApplyOperator :: Spec Unit
 checkApplyOperator =
     describe "$" do
         it "applies the argument correctly" do
-            (show `apply'` (flip' const' 1 2)) `shouldEqual` "2"
+            (show $$$ (flip' const' 1 2)) `shouldEqual` "2"
 
 main :: Effect Unit
 main = do
