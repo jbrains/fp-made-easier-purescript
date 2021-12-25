@@ -114,6 +114,21 @@ checkHead =
         it "longer list" do
             (head $ 1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` Just 1
 
+last :: forall a. List a -> Maybe a
+last Nil = Nothing
+last (x : Nil) = Just x
+last (_ : xs) = last xs
+
+checkLast :: Spec Unit
+checkLast =
+    describe "last" do
+        it "empty list" do
+            last (Nil :: List Unit) `shouldEqual` Nothing
+        it "1-item list" do
+            last (1 : Nil) `shouldEqual` Just 1
+        it "longer list" do
+            last (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` Just 5
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -122,6 +137,7 @@ checkDataList =
         checkSnoc
         checkLength
         checkHead
+        checkLast
 
 main :: Effect Unit
 main = do
