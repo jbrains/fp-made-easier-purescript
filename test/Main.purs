@@ -9,6 +9,7 @@ import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
+import Test.Spec (pending')
 
 checkFlip :: Spec Unit
 checkFlip =
@@ -53,10 +54,23 @@ checkSingleton =
         it "matches creating a List the long way" do
             (singleton 12) `shouldEqual` (12 : Nil)
 
+null :: forall a. List a -> Boolean
+null Nil = true
+null _ = false
+
+checkNull :: Spec Unit
+checkNull =
+    describe "null" do
+        it "handles an empty list" do
+            null Nil `shouldEqual` true
+        it "handles an non-empty list" do
+            (null $ singleton 12) `shouldEqual` false
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
         checkSingleton
+        checkNull
 
 main :: Effect Unit
 main = do
