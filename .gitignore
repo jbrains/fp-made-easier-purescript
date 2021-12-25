@@ -13,3 +13,6 @@
 
 # Caches
 /.pulp-cache/
+
+# IntelliJ IDEA
+.idea
