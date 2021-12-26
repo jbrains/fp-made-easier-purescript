@@ -263,6 +263,25 @@ checkFindLastIndex =
             it "several-item list" do
                 findLastIndex (const false) (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` Nothing
 
+reverse :: List ~> List
+reverse = prependAllFrom Nil
+    where
+        prependAllFrom to from = case from of
+            Nil -> to
+            (y : ys) -> prependAllFrom (y : to) ys
+
+checkReverse :: Spec Unit
+checkReverse =
+    describe "reverse" do
+        it "empty list" do
+            reverse (Nil :: List Unit) `shouldEqual` (Nil :: List Unit)
+        it "1-item list" do
+            reverse (5 : Nil) `shouldEqual` (5 : Nil)
+        it "2-item list" do
+            reverse (5 : 3 : Nil) `shouldEqual` (3 : 5 : Nil)
+        it "3-item list" do
+            reverse (7 : 5 : 3 : Nil) `shouldEqual` (3 : 5 : 7 : Nil)
+
 
 checkDataList :: Spec Unit
 checkDataList =
@@ -278,6 +297,7 @@ checkDataList =
         checkIndex
         checkFindIndex
         checkFindLastIndex
+        checkReverse
 
 main :: Effect Unit
 main = do
