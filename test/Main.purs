@@ -282,6 +282,18 @@ checkReverse =
         it "3-item list" do
             reverse (7 : 5 : 3 : Nil) `shouldEqual` (3 : 5 : 7 : Nil)
 
+concat :: forall a. List (List a) -> List a
+concat Nil = Nil
+concat ((x : Nil) : Nil) = singleton x
+concat _ = Nil
+
+checkConcat :: Spec Unit
+checkConcat =
+    describe "concat" do
+        it "empty list" do
+            concat (Nil :: List (List Unit)) `shouldEqual` (Nil :: List Unit)
+        it "1-list list" do
+            concat ((1 : Nil) : Nil) `shouldEqual` (1 : Nil)
 
 checkDataList :: Spec Unit
 checkDataList =
@@ -298,6 +310,7 @@ checkDataList =
         checkFindIndex
         checkFindLastIndex
         checkReverse
+        checkConcat
 
 main :: Effect Unit
 main = do
