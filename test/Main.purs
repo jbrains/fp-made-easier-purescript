@@ -228,6 +228,46 @@ checkFindIndex =
             it "several-item list" do
                 findIndex (const false) (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` Nothing
 
+findLastIndex :: forall a. (a -> Boolean) -> List a -> Maybe Int
+findLastIndex _ Nil = Nothing
+findLastIndex p (x : Nil) | p x = Just 0
+findLastIndex p (_ : xs) = findLastIndexFromOffset 1 Nothing p xs
+    where
+        findLastIndexFromOffset offset latestMatchSoFar predicate remainingList = case remainingList of
+            Nil -> latestMatchSoFar
+            (y : ys) | predicate y -> findLastIndexFromOffset (offset + 1) (Just offset) predicate ys
+            (y : ys) -> findLastIndexFromOffset (offset + 1) latestMatchSoFar predicate ys
+
+findLastIndex _ _ = Just (-1)
+
+checkFindLastIndex :: Spec Unit
+checkFindLastIndex =
+    describe "findLastIndex" do
+        describe "exactly 1 item matches" do
+            it "first item matches" do
+                findLastIndex (_ == 10) (10 : Nil) `shouldEqual` Just 0
+            it "second item matches" do
+                findLastIndex (_ == 10) (1 : 10 : Nil) `shouldEqual` Just 1
+            it "third item matches" do
+                findLastIndex (_ == 10) (1 : 2 : 10 : Nil) `shouldEqual` Just 2
+            it "item in the middle matches" do
+                findLastIndex (_ == 10) (1 : 2 : 3 : 10 : 5 : 6 : 7 : Nil) `shouldEqual` Just 3
+        describe "several items match" do
+            it "starting with the last item" do
+                findLastIndex (_ == 10) (10 : 2 : 10 : 4 : 5 : 10 : Nil) `shouldEqual` Just 5
+            it "starting with the second-last item" do
+                findLastIndex (_ == 10) (1 : 10 : 10 : 4 : 10 : 5 : Nil) `shouldEqual` Just 4
+            it "starting somewhere in the middle" do
+                findLastIndex (_ == 10) (1 : 2 : 3 : 10 : 5 : 10 : 7 : 8 : 9 : Nil) `shouldEqual` Just 5
+        describe "no items match" do
+            it "empty list" do
+                findLastIndex (const false) Nil `shouldEqual` Nothing
+                findLastIndex (const true) Nil `shouldEqual` Nothing
+            it "1-item list" do
+                findLastIndex (const false) (1 : Nil) `shouldEqual` Nothing
+            it "several-item list" do
+                findLastIndex (const false) (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` Nothing
+
 
 checkDataList :: Spec Unit
 checkDataList =
@@ -242,6 +282,7 @@ checkDataList =
         checkUncons
         checkIndex
         checkFindIndex
+        checkFindLastIndex
 
 main :: Effect Unit
 main = do
