@@ -193,9 +193,7 @@ checkIndex =
 
 
 findIndex :: forall a. (a -> Boolean) -> List a -> Maybe Int
-findIndex _ Nil = Nothing
-findIndex predicate (x : _) | predicate x = Just 0
-findIndex predicate xs = findIndexStartingFrom 0 predicate xs
+findIndex = findIndexStartingFrom 0
     where
     findIndexStartingFrom offset predicate remainingList = case remainingList of
         Nil -> Nothing
