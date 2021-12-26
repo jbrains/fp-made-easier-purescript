@@ -10,6 +10,7 @@ import Test.Spec (Spec, describe, it, pending')
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
+import Test.Spec (describe)
 
 checkFlip :: Spec Unit
 checkFlip =
@@ -190,6 +191,46 @@ checkIndex =
             it "works" do
                 ((1 : Nil) !! 0) `shouldEqual` (Just 1)
 
+
+findIndex :: forall a. (a -> Boolean) -> List a -> Maybe Int
+findIndex _ Nil = Nothing
+findIndex predicate (x : _) | predicate x = Just 0
+findIndex predicate (_ : xs) = findIndexStartingFrom 1 predicate xs
+    where
+    findIndexStartingFrom offset predicate remainingList = case remainingList of
+        Nil -> Nothing
+        (y : _) | predicate y -> Just offset
+        (_ : ys) -> findIndexStartingFrom (offset + 1) predicate ys
+
+checkFindIndex :: Spec Unit
+checkFindIndex =
+    describe "findIndex" do
+        describe "exactly 1 item matches" do
+            it "first item matches" do
+                findIndex (_ == 10) (10 : Nil) `shouldEqual` Just 0
+            it "second item matches" do
+                findIndex (_ == 10) (1 : 10 : Nil) `shouldEqual` Just 1
+            it "third item matches" do
+                findIndex (_ == 10) (1 : 2 : 10 : Nil) `shouldEqual` Just 2
+            it "item in the middle matches" do
+                findIndex (_ == 10) (1 : 2 : 3 : 10 : 5 : 6 : 7 : Nil) `shouldEqual` Just 3
+        describe "several items match" do
+            it "starting with the first item" do
+                findIndex (_ == 10) (10 : 2 : 10 : 4 : 5 : 10 : Nil) `shouldEqual` Just 0
+            it "starting with the second item" do
+                findIndex (_ == 10) (1 : 10 : 10 : 4 : 5 : 10 : Nil) `shouldEqual` Just 1
+            it "starting somewhere in the middle" do
+                findIndex (_ == 10) (1 : 2 : 3 : 10 : 5 : 10 : 7 : Nil) `shouldEqual` Just 3
+        describe "no items match" do
+            it "empty list" do
+                findIndex (const false) Nil `shouldEqual` Nothing
+                findIndex (const true) Nil `shouldEqual` Nothing
+            it "1-item list" do
+                findIndex (const false) (1 : Nil) `shouldEqual` Nothing
+            it "several-item list" do
+                findIndex (const false) (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` Nothing
+
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -202,6 +243,7 @@ checkDataList =
         checkInit
         checkUncons
         checkIndex
+        checkFindIndex
 
 main :: Effect Unit
 main = do
