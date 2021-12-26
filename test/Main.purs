@@ -229,16 +229,12 @@ checkFindIndex =
                 findIndex (const false) (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` Nothing
 
 findLastIndex :: forall a. (a -> Boolean) -> List a -> Maybe Int
-findLastIndex _ Nil = Nothing
-findLastIndex p (x : Nil) | p x = Just 0
-findLastIndex p (_ : xs) = findLastIndexFromOffset 1 Nothing p xs
+findLastIndex p xs = findLastIndexFromOffset 0 Nothing p xs
     where
         findLastIndexFromOffset offset latestMatchSoFar predicate remainingList = case remainingList of
             Nil -> latestMatchSoFar
             (y : ys) | predicate y -> findLastIndexFromOffset (offset + 1) (Just offset) predicate ys
             (y : ys) -> findLastIndexFromOffset (offset + 1) latestMatchSoFar predicate ys
-
-findLastIndex _ _ = Just (-1)
 
 checkFindLastIndex :: Spec Unit
 checkFindLastIndex =
