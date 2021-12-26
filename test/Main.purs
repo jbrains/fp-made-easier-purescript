@@ -167,6 +167,8 @@ index _        n | n < 0 = Nothing
 index (x : _)  0 = Just x
 index (_ : xs) n = index xs (n-1)
 
+infixl 8 index as !!
+
 checkIndex :: Spec Unit
 checkIndex =
     describe "index" do
@@ -184,6 +186,9 @@ checkIndex =
                 index (1 : Nil) 273123 `shouldEqual` Nothing
                 index (1 : 2 : 3 : 4 : 5 : Nil) (-2) `shouldEqual` Nothing
                 index (1 : 2 : 3 : 4 : 5 : Nil) 5 `shouldEqual` Nothing
+        describe "use operator" do
+            it "works" do
+                ((1 : Nil) !! 0) `shouldEqual` (Just 1)
 
 checkDataList :: Spec Unit
 checkDataList =
