@@ -283,16 +283,9 @@ checkReverse =
             reverse (7 : 5 : 3 : Nil) `shouldEqual` (3 : 5 : 7 : Nil)
 
 concat :: forall a. List (List a) -> List a
-concat xss = go Nil xss
-    where
-    go :: List a -> List (List a) -> List a
-    go to from = case from of
-        Nil -> to
-        y : ys -> go (appendAllTo to y) ys
-    appendAllTo :: List a -> List a -> List a
-    appendAllTo to from = case from of
-        Nil -> to
-        y : ys -> appendAllTo (snoc to y) ys
+concat Nil = Nil
+concat (Nil : xss) = concat xss
+concat ((x : xs) : xss) = x : concat (xs : xss)
 
 checkConcat :: Spec Unit
 checkConcat =
