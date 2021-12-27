@@ -350,9 +350,11 @@ checkCatMaybes =
                 catMaybes (Just unit : Nothing : Nothing : Just unit : Nothing : Just unit : Just unit : Nothing : Nothing : Nil) `shouldEqual` (unit : unit : unit : unit : Nil)
 
 range :: Int -> Int -> List Int
-range from to
-    | from == to = singleton from
-    | otherwise = from : range (from + (if from > to then (-1) else 1)) to
+range from to = rangeByCollectingInReverseSequence Nil (if from > to then (-1) else 1) from to
+    where
+    rangeByCollectingInReverseSequence collected step from to
+        | from == to = to : collected
+        | otherwise = rangeByCollectingInReverseSequence (to : collected) step from (to - step)
 
 checkRange :: Spec Unit
 checkRange =
