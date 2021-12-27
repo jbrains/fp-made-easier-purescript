@@ -11,6 +11,8 @@ import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
 import Test.Spec (describe)
+import Test.Spec (describe)
+import Data.Int (rem)
 
 checkFlip :: Spec Unit
 checkFlip =
@@ -301,6 +303,28 @@ checkConcat =
         it "several-list list of several items each" do
             concat ((1 : 2 : 3 : Nil) : (4 : Nil) : (5 : 6 : Nil) : Nil : (7 : 8 : 9 : Nil) : Nil) `shouldEqual` (1 : 2 : 3 : 4 : 5 : 6 : 7 : 8 : 9 : Nil)
 
+filter :: forall a. (a -> Boolean) -> List a -> List a
+filter _ Nil = Nil
+filter predicate (x : xs) = if predicate x then (x : filter predicate xs) else (filter predicate xs)
+
+checkFilter :: Spec Unit
+checkFilter =
+    describe "filter" do
+        it "empty list" do
+            filter (const true) (Nil :: List Unit) `shouldEqual` (Nil :: List Unit)
+        describe "1-item list" do
+            it "item matches" do
+                filter (const true) (1 : Nil) `shouldEqual` (1 : Nil)
+            it "item doesn't match" do
+                filter (const false) (1 : Nil) `shouldEqual` (Nil)
+        describe "several-item list" do
+            it "all items match" do
+                filter (const true) (1 : 2 : 3 : Nil) `shouldEqual` (1 : 2 : 3 : Nil)
+            it "no items match" do
+                filter (const false) (1 : 2 : 3 : Nil) `shouldEqual` (Nil)
+            it "some items match" do
+                filter (\n -> rem n 2 == 0) (1 : 2 : 3 : Nil) `shouldEqual` (2 : Nil)
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -317,6 +341,7 @@ checkDataList =
         checkFindLastIndex
         checkReverse
         checkConcat
+        checkFilter
 
 main :: Effect Unit
 main = do
