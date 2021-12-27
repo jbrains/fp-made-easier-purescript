@@ -284,7 +284,7 @@ checkReverse =
 
 concat :: forall a. List (List a) -> List a
 concat Nil = Nil
-concat ((x : Nil) : Nil) = singleton x
+concat (xs : Nil) = xs
 concat _ = Nil
 
 checkConcat :: Spec Unit
@@ -294,6 +294,8 @@ checkConcat =
             concat (Nil :: List (List Unit)) `shouldEqual` (Nil :: List Unit)
         it "1-list list" do
             concat ((1 : Nil) : Nil) `shouldEqual` (1 : Nil)
+        it "1-list list with 3 items" do
+            concat ((1 : 2 : 3 : Nil) : Nil) `shouldEqual` (1 : 2 : 3 : Nil)
 
 checkDataList :: Spec Unit
 checkDataList =
