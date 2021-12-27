@@ -368,6 +368,39 @@ checkRange =
             range 5 4 `shouldEqual` (5 : 4 : Nil)
             range 6 3 `shouldEqual` (6 : 5 : 4 : 3 : Nil)
 
+take :: forall a. Int -> List a -> List a
+take n = reverse <<< takeWhileCollectingBackwards Nil (max n 0)
+    where
+    -- CONTRACT howManyMore >= 0
+    takeWhileCollectingBackwards collected 0 _ = collected
+    takeWhileCollectingBackwards collected _ Nil = collected
+    takeWhileCollectingBackwards collected howManyMore (y : ys) = takeWhileCollectingBackwards (y : collected) (howManyMore - 1) ys
+
+checkTake :: Spec Unit
+checkTake =
+    describe "take" do
+        it "empty list" do
+            take 1 (Nil :: List Unit) `shouldEqual` (Nil :: List Unit)
+            take 4 (Nil :: List Unit) `shouldEqual` (Nil :: List Unit)
+            take (-1) (Nil :: List Unit) `shouldEqual` (Nil :: List Unit)
+        it "exactly the length of the list" do
+            take 1 (1 : Nil) `shouldEqual` (1 : Nil)
+            take 2 (1 : 2 : Nil) `shouldEqual` (1 : 2 : Nil)
+            take 3 (1 : 2 : 3 : Nil) `shouldEqual` (1 : 2 : 3 : Nil)
+        it "items left over" do
+            take 1 (1 : 2 : 3 : Nil) `shouldEqual` (1 : Nil)
+            take 2 (1 : 2 : 3 : Nil) `shouldEqual` (1 : 2 : Nil)
+            take 3 (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` (1 : 2 : 3 : Nil)
+        it "ran out of items" do
+            take 10 (1 : Nil) `shouldEqual` (1 : Nil)
+            take 100 (1 : 2 : Nil) `shouldEqual` (1 : 2 : Nil)
+            take 1000 (1 : 2 : 3 : Nil) `shouldEqual` (1 : 2 : 3 : Nil)
+        it "request < 0 items" do
+            take (-1) (Nil :: List Unit) `shouldEqual` (Nil :: List Unit)
+            take (-1) (1 : 2 : Nil) `shouldEqual` Nil
+            take (-1) (1 : 2 : 3 : Nil) `shouldEqual` Nil
+            take (-92341) (1 : 2 : 3 : Nil) `shouldEqual` Nil
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -387,6 +420,7 @@ checkDataList =
         checkFilter
         checkCatMaybes
         checkRange
+        checkTake
 
 main :: Effect Unit
 main = do
