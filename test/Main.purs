@@ -401,6 +401,37 @@ checkTake =
             take (-1) (1 : 2 : 3 : Nil) `shouldEqual` Nil
             take (-92341) (1 : 2 : 3 : Nil) `shouldEqual` Nil
 
+drop :: forall a. Int -> List a -> List a
+drop _ Nil = Nil
+drop 0 xs = xs
+drop n _ | n < 0 = Nil
+drop n (_ : xs) = drop (n-1) xs
+
+checkDrop :: Spec Unit
+checkDrop =
+    describe "drop" do
+        it "empty list" do
+            drop 1 (Nil :: List Unit) `shouldEqual` (Nil :: List Unit)
+            drop 4 (Nil :: List Unit) `shouldEqual` (Nil :: List Unit)
+            drop (-1) (Nil :: List Unit) `shouldEqual` (Nil :: List Unit)
+        it "exactly the length of the list" do
+            drop 1 (1 : Nil) `shouldEqual` Nil
+            drop 2 (1 : 2 : Nil) `shouldEqual` Nil
+            drop 3 (1 : 2 : 3 : Nil) `shouldEqual` Nil
+        it "items left over" do
+            drop 1 (1 : 2 : 3 : Nil) `shouldEqual` (2 : 3 : Nil)
+            drop 2 (1 : 2 : 3 : Nil) `shouldEqual` (3 : Nil)
+            drop 3 (1 : 2 : 3 : 4 : 5 : Nil) `shouldEqual` (4 : 5 : Nil)
+        it "ran out of items" do
+            drop 10 (1 : Nil) `shouldEqual` Nil
+            drop 100 (1 : 2 : Nil) `shouldEqual` Nil
+            drop 1000 (1 : 2 : 3 : Nil) `shouldEqual` Nil
+        it "request < 0 items" do
+            drop (-1) (Nil :: List Unit) `shouldEqual` (Nil :: List Unit)
+            drop (-1) (1 : 2 : Nil) `shouldEqual` Nil
+            drop (-1) (1 : 2 : 3 : Nil) `shouldEqual` Nil
+            drop (-92341) (1 : 2 : 3 : Nil) `shouldEqual` Nil
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -421,6 +452,7 @@ checkDataList =
         checkCatMaybes
         checkRange
         checkTake
+        checkDrop
 
 main :: Effect Unit
 main = do
