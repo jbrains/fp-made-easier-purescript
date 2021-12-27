@@ -349,6 +349,23 @@ checkCatMaybes =
             it "some Justs" do
                 catMaybes (Just unit : Nothing : Nothing : Just unit : Nothing : Just unit : Just unit : Nothing : Nothing : Nil) `shouldEqual` (unit : unit : unit : unit : Nil)
 
+range :: Int -> Int -> List Int
+range from to
+    | from == to = singleton from
+    | otherwise = from : range (from + (if from > to then (-1) else 1)) to
+
+checkRange :: Spec Unit
+checkRange =
+    describe "range" do
+        it "singleton" do
+            range 5 5 `shouldEqual` (5 : Nil)
+        it "increasing" do
+            range 5 6 `shouldEqual` (5 : 6 : Nil)
+            range 4 7 `shouldEqual` (4 : 5 : 6 : 7 : Nil)
+        it "decreasing" do
+            range 5 4 `shouldEqual` (5 : 4 : Nil)
+            range 6 3 `shouldEqual` (6 : 5 : 4 : 3 : Nil)
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -367,6 +384,7 @@ checkDataList =
         checkConcat
         checkFilter
         checkCatMaybes
+        checkRange
 
 main :: Effect Unit
 main = do
