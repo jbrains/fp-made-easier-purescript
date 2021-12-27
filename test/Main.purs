@@ -283,9 +283,16 @@ checkReverse =
             reverse (7 : 5 : 3 : Nil) `shouldEqual` (3 : 5 : 7 : Nil)
 
 concat :: forall a. List (List a) -> List a
-concat Nil = Nil
-concat (xs : Nil) = xs
-concat _ = Nil
+concat xss = go Nil xss
+    where
+    go :: List a -> List (List a) -> List a
+    go to from = case from of
+        Nil -> to
+        y : ys -> go (appendAllTo to y) ys
+    appendAllTo :: List a -> List a -> List a
+    appendAllTo to from = case from of
+        Nil -> to
+        y : ys -> appendAllTo (snoc to y) ys
 
 checkConcat :: Spec Unit
 checkConcat =
@@ -296,6 +303,10 @@ checkConcat =
             concat ((1 : Nil) : Nil) `shouldEqual` (1 : Nil)
         it "1-list list with 3 items" do
             concat ((1 : 2 : 3 : Nil) : Nil) `shouldEqual` (1 : 2 : 3 : Nil)
+        it "several-list list" do
+            concat ((1 : Nil) : (2 : Nil) : (3 : Nil) : Nil) `shouldEqual` (1 : 2 : 3 : Nil)
+        it "several-list list of several items each" do
+            concat ((1 : 2 : 3 : Nil) : (4 : Nil) : (5 : 6 : Nil) : Nil : (7 : 8 : 9 : Nil) : Nil) `shouldEqual` (1 : 2 : 3 : 4 : 5 : 6 : 7 : 8 : 9 : Nil)
 
 checkDataList :: Spec Unit
 checkDataList =
