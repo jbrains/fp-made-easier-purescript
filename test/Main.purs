@@ -328,6 +328,27 @@ checkFilter =
             it "more than 1 item matches" do
                 filter (\n -> rem n 2 == 0) (1 : 2 : 3 : 4 : 5 : 6 : Nil) `shouldEqual` (2 : 4 : 6 : Nil)
 
+catMaybes :: forall a. List (Maybe a) -> List a
+catMaybes Nil = Nil
+catMaybes (Just x : xs) = x : catMaybes xs
+catMaybes (Nothing : xs) = catMaybes xs
+
+checkCatMaybes :: Spec Unit
+checkCatMaybes =
+    describe "catMaybes" do
+        it "empty list" do
+            catMaybes (Nil :: List (Maybe Unit)) `shouldEqual` (Nil :: List Unit)
+        describe "1-item list" do
+            it "Nothing" do
+                catMaybes ((Nothing :: Maybe Unit) : Nil) `shouldEqual` (Nil :: List Unit)
+            it "Just" do
+                catMaybes (Just unit : Nil) `shouldEqual` (unit : Nil)
+        describe "several-item list" do
+            it "Nothings" do
+                catMaybes ((Nothing :: Maybe Unit) : (Nothing :: Maybe Unit) : (Nothing :: Maybe Unit) : (Nothing :: Maybe Unit) : Nil) `shouldEqual` (Nil :: List Unit)
+            it "some Justs" do
+                catMaybes (Just unit : Nothing : Nothing : Just unit : Nothing : Just unit : Just unit : Nothing : Nothing : Nil) `shouldEqual` (unit : unit : unit : unit : Nil)
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -345,6 +366,7 @@ checkDataList =
         checkReverse
         checkConcat
         checkFilter
+        checkCatMaybes
 
 main :: Effect Unit
 main = do
