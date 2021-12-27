@@ -304,8 +304,11 @@ checkConcat =
             concat ((1 : 2 : 3 : Nil) : (4 : Nil) : (5 : 6 : Nil) : Nil : (7 : 8 : 9 : Nil) : Nil) `shouldEqual` (1 : 2 : 3 : 4 : 5 : 6 : 7 : 8 : 9 : Nil)
 
 filter :: forall a. (a -> Boolean) -> List a -> List a
-filter _ Nil = Nil
-filter predicate (x : xs) = if predicate x then (x : filter predicate xs) else (filter predicate xs)
+filter predicate = reverse <<< filterWhileCollectingMatchesInReverseSequence Nil
+    where
+    filterWhileCollectingMatchesInReverseSequence matched remaining = case remaining of
+        Nil -> matched
+        (y : ys) -> if predicate y then filterWhileCollectingMatchesInReverseSequence (y : matched) ys else filterWhileCollectingMatchesInReverseSequence matched ys
 
 checkFilter :: Spec Unit
 checkFilter =
@@ -322,8 +325,8 @@ checkFilter =
                 filter (const true) (1 : 2 : 3 : Nil) `shouldEqual` (1 : 2 : 3 : Nil)
             it "no items match" do
                 filter (const false) (1 : 2 : 3 : Nil) `shouldEqual` (Nil)
-            it "some items match" do
-                filter (\n -> rem n 2 == 0) (1 : 2 : 3 : Nil) `shouldEqual` (2 : Nil)
+            it "more than 1 item matches" do
+                filter (\n -> rem n 2 == 0) (1 : 2 : 3 : 4 : 5 : 6 : Nil) `shouldEqual` (2 : 4 : 6 : Nil)
 
 checkDataList :: Spec Unit
 checkDataList =
