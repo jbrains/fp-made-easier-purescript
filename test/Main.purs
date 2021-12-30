@@ -535,6 +535,23 @@ checkZip =
             zip (1 : 2 : 3 : 4 : 5 : Nil) ("1" : "2" : "3" : Nil) `shouldEqual` (Tuple 1 "1" : Tuple 2 "2" : Tuple 3 "3" : Nil)
             zip (1 : 2 : 3 : Nil) ("1" : "2" : "3" : "4" : "5" : Nil) `shouldEqual` (Tuple 1 "1" : Tuple 2 "2" : Tuple 3 "3" : Nil)
 
+unzip :: forall a b. List (Tuple a b) -> Tuple (List a) (List b)
+unzip Nil = Tuple Nil Nil
+unzip (Tuple x y : Nil) = Tuple (x : Nil) (y : Nil)
+unzip (Tuple x y : xys) = unzip xys # consInsideTuple x y
+    where
+    consInsideTuple headX headY (Tuple tailX tailY) = Tuple (headX : tailX) (headY : tailY)
+
+checkUnzip :: Spec Unit
+checkUnzip =
+    describe "unzip" do
+        it "empty" do
+            unzip (Nil :: List (Tuple Int String)) `shouldEqual` (Tuple (Nil :: List Int) (Nil :: List String))
+        it "1-item list" do
+            unzip (Tuple 1 "1" : Nil) `shouldEqual` (Tuple (1 : Nil) ("1" : Nil))
+        it "n-item list" do
+            unzip (Tuple 1 "1" : Tuple 2 "2" : Tuple 3 "3" : Nil) `shouldEqual` (Tuple (1 : 2 : 3 : Nil) ("1" : "2" : "3" : Nil))
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -561,6 +578,7 @@ checkDataList =
         checkTakeEnd
         checkDropEnd
         checkZip
+        checkUnzip
 
 main :: Effect Unit
 main = do
