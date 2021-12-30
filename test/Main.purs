@@ -5,53 +5,14 @@ import Prelude
 import Data.Int (rem)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
-import Data.Tuple (Tuple(..), fst, snd)
+import Data.Tuple (Tuple(..), snd)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
-import Test.Spec (Spec, describe, it, pending')
+import Test.CheckPrelude (checkPrelude)
+import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
-
-
-
-
-
-
-
-checkFlip :: Spec Unit
-checkFlip =
-    describe "flip" do
-        it "applies the correct argument" do
-            (flip const 1 2) `shouldEqual` 2
-
-checkConst :: Spec Unit
-checkConst =
-    describe "const" do
-        it "returns its argument" do
-            const "::return me::" ignoreMe `shouldEqual` "::return me::"
-            where
-            ignoreMe = 12
-
-checkApplyOperator :: Spec Unit
-checkApplyOperator =
-    describe "$" do
-        it "applies the argument correctly" do
-            (show $ flip const 1 2) `shouldEqual` "2"
-
-checkApplyFlippedOperator :: Spec Unit
-checkApplyFlippedOperator =
-    describe "#" do
-        it "applies the argument correctly" do
-            (flip const 1 2 # show) `shouldEqual` "2"
-
-checkPrelude :: Spec Unit
-checkPrelude =
-    describe "Prelude" do
-       checkFlip
-       checkConst
-       checkApplyOperator
-       checkApplyFlippedOperator
 
 singleton :: forall a. a -> List a
 singleton x = x : Nil
