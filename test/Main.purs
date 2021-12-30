@@ -5,15 +5,19 @@ import Prelude
 import Data.Int (rem)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
+import Data.Tuple (Tuple(..), fst, snd)
 import Effect (Effect)
 import Effect.Aff (launchAff_)
 import Test.Spec (Spec, describe, it, pending')
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
-import Data.Tuple (Tuple(..))
-import Data.Tuple (fst)
-import Data.Tuple (snd)
+
+
+
+
+
+
 
 checkFlip :: Spec Unit
 checkFlip =
