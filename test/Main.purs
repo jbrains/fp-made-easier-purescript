@@ -514,6 +514,27 @@ checkDropEnd =
         it "drop none" do
             dropEnd 0 (1 : 2 : 3 : Nil) `shouldEqual` (1 : 2 : 3 : Nil)
 
+zip :: forall a b. List a -> List b -> List (Tuple a b)
+zip Nil _ = Nil
+zip _ Nil = Nil
+zip (x : xs) (y : ys) = Tuple x y : zip xs ys
+
+checkZip :: Spec Unit
+checkZip =
+    describe "zip" do
+        it "empty x empty" do
+            zip (Nil :: List Unit) (Nil :: List Unit) `shouldEqual` (Nil :: List (Tuple Unit Unit))
+        it "empty x not empty" do
+            zip (Nil :: List Unit) (unit : Nil) `shouldEqual` (Nil :: List (Tuple Unit Unit))
+            zip (unit : Nil) (Nil :: List Unit) `shouldEqual` (Nil :: List (Tuple Unit Unit))
+        it "1-item x 1-item" do
+            zip (1 : Nil) ("1" : Nil) `shouldEqual` (Tuple 1 "1" : Nil)
+        it "n-item x n-item" do
+            zip (1 : 2 : 3 : 4 : 5 : Nil) ("1" : "2" : "3" : "4" : "5" : Nil) `shouldEqual` (Tuple 1 "1" : Tuple 2 "2" : Tuple 3 "3" : Tuple 4 "4" : Tuple 5 "5" : Nil)
+        it "several items, but one list shorter than the other" do
+            zip (1 : 2 : 3 : 4 : 5 : Nil) ("1" : "2" : "3" : Nil) `shouldEqual` (Tuple 1 "1" : Tuple 2 "2" : Tuple 3 "3" : Nil)
+            zip (1 : 2 : 3 : Nil) ("1" : "2" : "3" : "4" : "5" : Nil) `shouldEqual` (Tuple 1 "1" : Tuple 2 "2" : Tuple 3 "3" : Nil)
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -539,6 +560,7 @@ checkDataList =
         checkDropWhile
         checkTakeEnd
         checkDropEnd
+        checkZip
 
 main :: Effect Unit
 main = do
