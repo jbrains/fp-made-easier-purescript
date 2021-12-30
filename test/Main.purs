@@ -433,9 +433,11 @@ checkDrop =
             drop (-92341) (1 : 2 : 3 : Nil) `shouldEqual` Nil
 
 takeWhile :: forall a. (a -> Boolean) -> List a -> List a
-takeWhile _ Nil = Nil
-takeWhile test (x : xs) =
-    if (test x) then (x : takeWhile test xs) else Nil
+takeWhile test = reverse <<< takeWhileByCollecting Nil test
+    where
+    takeWhileByCollecting collected test remaining = case remaining of
+        Nil -> collected
+        (y : ys) -> if (test y) then (takeWhileByCollecting (y : collected) test ys) else collected
 
 checkTakeWhile :: Spec Unit
 checkTakeWhile =
