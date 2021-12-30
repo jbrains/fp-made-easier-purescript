@@ -449,6 +449,23 @@ checkTakeWhile =
         it "take none" do
             takeWhile (_ > 3) (2 : 4 : 5 : 6 : 7 : 8 : Nil) `shouldEqual` Nil
 
+dropWhile :: forall a. (a -> Boolean) -> List a -> List a
+dropWhile _ Nil = Nil
+dropWhile test xs@(head : tail) =
+    if test head then dropWhile test tail else xs
+
+checkDropWhile :: Spec Unit
+checkDropWhile =
+    describe "dropWhile" do
+        it "empty list" do
+            dropWhile (const true) (Nil :: List Int) `shouldEqual` (Nil :: List Int)
+        it "drop some" do
+            dropWhile (_ > 3) (5 : 4 : 3 : 99 : 101 : Nil) `shouldEqual` (3 : 99 : 101 : Nil)
+        it "drop all" do
+            dropWhile (const true) (5 : 4 : 3 : 99 : 101 : Nil) `shouldEqual` Nil
+        it "drop none" do
+            dropWhile (const false) (5 : 4 : 3 : 99 : 101 : Nil) `shouldEqual` (5 : 4 : 3 : 99 : 101 : Nil)
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -471,6 +488,7 @@ checkDataList =
         checkTake
         checkDrop
         checkTakeWhile
+        checkDropWhile
 
 main :: Effect Unit
 main = do
