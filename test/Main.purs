@@ -2,6 +2,7 @@ module Test.Main where
 
 import Prelude
 
+import Data.Int (rem)
 import Data.List (List(..), (:))
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
@@ -10,9 +11,6 @@ import Test.Spec (Spec, describe, it, pending')
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
-import Test.Spec (describe)
-import Test.Spec (describe)
-import Data.Int (rem)
 
 checkFlip :: Spec Unit
 checkFlip =
