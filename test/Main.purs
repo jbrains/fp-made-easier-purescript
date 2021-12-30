@@ -11,6 +11,9 @@ import Test.Spec (Spec, describe, it, pending')
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
+import Data.Tuple (Tuple(..))
+import Data.Tuple (fst)
+import Data.Tuple (snd)
 
 checkFlip :: Spec Unit
 checkFlip =
@@ -466,6 +469,28 @@ checkDropWhile =
         it "drop none" do
             dropWhile (const false) (5 : 4 : 3 : 99 : 101 : Nil) `shouldEqual` (5 : 4 : 3 : 99 : 101 : Nil)
 
+takeEnd :: forall a. Int -> List a -> List a
+takeEnd _ Nil = Nil
+takeEnd n xs = snd $ go n xs where
+    go howManyWanted Nil = Tuple 0 Nil
+    go howManyWanted (head : tail) = go howManyWanted tail # prependIfStillCollecting howManyWanted head
+        where
+        prependIfStillCollecting :: Int -> a -> Tuple Int (List a) -> Tuple Int (List a)
+        prependIfStillCollecting howManyWanted head (Tuple howManyRemaining remaining) =
+            Tuple
+                (howManyRemaining + 1)
+                (if howManyRemaining < howManyWanted then (head : remaining) else remaining)
+
+checkTakeEnd :: Spec Unit
+checkTakeEnd =
+    describe "takeEnd" do
+        it "empty list" do
+            takeEnd 1 (Nil :: List Unit) `shouldEqual` (Nil :: List Unit)
+        it "take all" do
+            takeEnd 3 (1 : 2 : 3 : Nil) `shouldEqual` (1 : 2 : 3 : Nil)
+        it "take some" do
+            takeEnd 2 (1 : 2 : 3 : Nil) `shouldEqual` (2 : 3 : Nil)
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -489,6 +514,7 @@ checkDataList =
         checkDrop
         checkTakeWhile
         checkDropWhile
+        checkTakeEnd
 
 main :: Effect Unit
 main = do
