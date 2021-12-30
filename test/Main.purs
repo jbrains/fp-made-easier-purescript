@@ -491,6 +491,29 @@ checkTakeEnd =
         it "take some" do
             takeEnd 2 (1 : 2 : 3 : Nil) `shouldEqual` (2 : 3 : Nil)
 
+dropEnd :: forall a. Int -> List a -> List a
+dropEnd n xs = snd $ go n xs where
+    go howManyWanted Nil = Tuple 0 Nil
+    go howManyWanted (head : tail) = go howManyWanted tail # prependUnlessStillDropping howManyWanted head
+        where
+        prependUnlessStillDropping :: Int -> a -> Tuple Int (List a) -> Tuple Int (List a)
+        prependUnlessStillDropping howManyWanted head (Tuple howManyRemaining remaining) =
+            Tuple
+                (howManyRemaining + 1)
+                (if howManyRemaining < howManyWanted then (remaining) else (head : remaining))
+
+checkDropEnd :: Spec Unit
+checkDropEnd =
+    describe "dropEnd" do
+        it "empty list" do
+            dropEnd 1 (Nil :: List Unit) `shouldEqual` (Nil :: List Unit)
+        it "drop all" do
+            dropEnd 3 (1 : 2 : 3 : Nil) `shouldEqual` Nil
+        it "drop some" do
+            dropEnd 2 (1 : 2 : 3 : Nil) `shouldEqual` (1 : Nil)
+        it "drop none" do
+            dropEnd 0 (1 : 2 : 3 : Nil) `shouldEqual` (1 : 2 : 3 : Nil)
+
 checkDataList :: Spec Unit
 checkDataList =
     describe "Data.List" do
@@ -515,6 +538,7 @@ checkDataList =
         checkTakeWhile
         checkDropWhile
         checkTakeEnd
+        checkDropEnd
 
 main :: Effect Unit
 main = do
