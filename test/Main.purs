@@ -35,11 +35,8 @@ instance showPerson :: Show Person where
 
 newtype MyUnit = MyUnit Unit
 
-instance eqMyUnit :: Eq MyUnit where
-    eq _ _ = true
-
-instance ordMyUnit :: Ord MyUnit where
-    compare _ _ = EQ
+derive instance eqMyUnit :: Eq MyUnit
+derive instance ordMyUnit :: Ord MyUnit
 
 instance showMyUnit :: Show MyUnit where
     show _ = "MyUnit unit"
