@@ -11,6 +11,7 @@ import Test.Spec (Spec, describe, it)
 import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
+import Test.CheckCodingTypeclasses (checkCodingTypeclasses)
 
 main :: Effect Unit
 main = do
@@ -18,3 +19,4 @@ main = do
         checkPrelude
         checkDataList
         checkBuiltinTypeclasses
+        checkCodingTypeclasses
