@@ -33,33 +33,50 @@ instance eqPerson :: Eq Person where
 instance showPerson :: Show Person where
     show (Person {name, age, address: {street1, street2, city, state, zip}}) = "Person named " <> name <> ", aged " <> (show age) <> ", living at " <> street1 <> " " <> street2 <> " " <> city <> ", " <> state <> " " <> zip
 
+newtype MyUnit = MyUnit Unit
+
+instance eqMyUnit :: Eq MyUnit where
+    eq _ _ = true
+
+instance ordMyUnit :: Ord MyUnit where
+    compare _ _ = EQ
+
+instance showMyUnit :: Show MyUnit where
+    show _ = "MyUnit unit"
+
 checkBuiltinTypeclasses :: Spec Unit
 checkBuiltinTypeclasses =
-    describe "Eq typeclass" do
-        it "is defined for Person" do
-            shouldEqual
-                (Person
-                    { name: "J. B. Rainsberger"
-                    , age: 47
-                    , address:
-                        { street1: "423 Water St"
-                        , street2: ""
-                        , city: "Summerside"
-                        , state: "PE"
-                        , zip: "C1N1C8"
-                        }
-                    })
-                (Person
-                    { name: "J. B. Rainsberger"
-                    , age: 47
-                    , address:
-                        { street1: "423 Water St"
-                        , street2: ""
-                        , city: "Summerside"
-                        , state: "PE"
-                        , zip: "C1N1C8"
-                        }
-                    })
+    describe "Built-in typeclasses" do
+        describe "MyUnit, since I can't do this directly with Unit" do
+            it "implements Eq as expected" do
+                (MyUnit unit) `shouldEqual` (MyUnit unit)
+            it "implements Ord as expected" do
+                (compare (MyUnit unit) (MyUnit unit)) `shouldEqual` EQ
+        describe "Person" do
+            it "implements Eq" do
+                shouldEqual
+                    (Person
+                        { name: "J. B. Rainsberger"
+                        , age: 47
+                        , address:
+                            { street1: "423 Water St"
+                            , street2: ""
+                            , city: "Summerside"
+                            , state: "PE"
+                            , zip: "C1N1C8"
+                            }
+                        })
+                    (Person
+                        { name: "J. B. Rainsberger"
+                        , age: 47
+                        , address:
+                            { street1: "423 Water St"
+                            , street2: ""
+                            , city: "Summerside"
+                            , state: "PE"
+                            , zip: "C1N1C8"
+                            }
+                        })
 
 main :: Effect Unit
 main = do
