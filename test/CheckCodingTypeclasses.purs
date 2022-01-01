@@ -13,16 +13,8 @@ derive instance genericMaybe :: Generic (Maybe a) _
 instance showMaybe :: Show a => Show (Maybe a) where
     show = genericShow
 
-instance eqMaybe :: Eq a => Eq (Maybe a) where
-    eq Nothing Nothing = true
-    eq (Just x) (Just y) = x == y
-    eq _ _ = false
-
-instance ordMaybe :: Ord a => Ord (Maybe a) where
-    compare Nothing Nothing = EQ
-    compare (Just x) (Just y) = compare x y
-    compare Nothing _ = LT
-    compare _ Nothing = GT
+derive instance eqMaybe :: Eq a => Eq (Maybe a)
+derive instance ordMaybe :: Ord a => Ord (Maybe a)
 
 greaterThanOrEq :: forall a. Ord a => a -> a -> Boolean
 greaterThanOrEq x y = comparison == GT || comparison == EQ
