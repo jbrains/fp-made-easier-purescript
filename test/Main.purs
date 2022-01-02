@@ -12,6 +12,7 @@ import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
 import Test.CheckCodingTypeclasses (checkCodingTypeclasses)
+import Test.CheckFoldByHand (checkFoldByHand)
 
 main :: Effect Unit
 main = do
@@ -20,3 +21,4 @@ main = do
         checkDataList
         checkBuiltinTypeclasses
         checkCodingTypeclasses
+        checkFoldByHand
